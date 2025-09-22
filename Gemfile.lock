@@ -53,6 +53,9 @@ GEM
       activemodel (= 8.0.2.1)
       activesupport (= 8.0.2.1)
       timeout (>= 0.4.0)
+    activerecord-sqlserver-adapter (8.0.8)
+      activerecord (~> 8.0.0)
+      tiny_tds
     activestorage (8.0.2.1)
       actionpack (= 8.0.2.1)
       activejob (= 8.0.2.1)
@@ -261,8 +264,6 @@ GEM
       fugit (~> 1.11.0)
       railties (>= 7.1)
       thor (>= 1.3.1)
-    sqlite3 (2.7.4-x64-mingw-ucrt)
-    sqlite3 (2.7.4-x86_64-linux-gnu)
     sshkit (1.24.0)
       base64
       logger
@@ -275,6 +276,10 @@ GEM
     thruster (0.1.15)
     thruster (0.1.15-x86_64-linux)
     timeout (0.4.3)
+    tiny_tds (3.3.0-x64-mingw-ucrt)
+      bigdecimal (~> 3)
+    tiny_tds (3.3.0-x86_64-linux-gnu)
+      bigdecimal (~> 3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2025.2)
@@ -295,6 +300,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  activerecord-sqlserver-adapter
   bootsnap
   brakeman
   debug
@@ -305,8 +311,8 @@ DEPENDENCIES
   solid_cable
   solid_cache
   solid_queue
-  sqlite3 (>= 2.1)
   thruster
+  tiny_tds
   tzinfo-data
 
 BUNDLED WITH
