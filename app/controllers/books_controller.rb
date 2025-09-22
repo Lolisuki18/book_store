@@ -26,7 +26,7 @@ class BooksController < ApplicationController
   end
 
   def update
-    if @book.update!(book_params)
+    if @book.update(book_params)
       render json: @book , status: :ok
     else
       render json: @book.errors.full_messages, status: :unprocessable_entity
@@ -34,7 +34,7 @@ class BooksController < ApplicationController
   end
 
   def destroy
-    if @book.update!(active: false)
+    if @book.update(active: false)
       render json: { message: 'Book delete successfully' } , status: :ok
     else
       render json: @book.errors.full_messages, status: :unprocessable_entity
@@ -45,6 +45,11 @@ class BooksController < ApplicationController
 
   def set_book
     @book = Book.includes(:publisher, :authors, :categories).find(params[:id])
+    if @book.nil?
+      render json: { error: 'Book not found' }, status: :not_found
+    end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Book not found' }, status: :not_found
   end
   def book_params
     params.require(:book).permit(:page_count,:title, :publisher_id, :isbn, :publication_date, :price, :stock_quantity, :description, :active, :language , :cover_image_url)
