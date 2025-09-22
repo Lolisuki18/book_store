@@ -1,6 +1,11 @@
 class Author < ApplicationRecord
   #Validations
-  validates :name, presence: true
+  validates :first_name, presence: true , length: { maximum: 50 }
+
+  validates :last_name, presence: true,  length: { maximum: 50 }
+  validates :nationality, presence: true
+
+  validates :stage_name, uniqueness: true, allow_nil: true
 
   #Có nghĩa là 1 tác giả có thể viết nhiều sách , và khi xoá tác giả thì cũng xoá luôn trong bảng đó để tránh mồ côi 
   has_many :book_authors, dependent: :destroy
