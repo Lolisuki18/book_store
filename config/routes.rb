@@ -19,19 +19,29 @@ devise_for :users,
   defaults: { format: :json },
   controllers: {
     registrations: 'users/registrations',
-    sessions: 'users/sessions'
+    sessions: 'users/sessions',
+    passwords: 'users/passwords',
+    confirmations: 'users/confirmations',
+    unlocks: 'users/unlocks'
   }
+  # rails g devise:controllers users gõ cái này nó sẽ tự sinh ra controller cho mình
 
 
-# Các endpoint có sẵn:
+# POST /users → đăng ký (sign up)
 
-# Đăng ký: POST /users
+# POST /users/sign_in → đăng nhập (sign in)
 
-# Đăng nhập: POST /login
+# DELETE /users/sign_out → đăng xuất (sign out)
 
-# Đăng xuất: DELETE /logout
+# POST /users/password → gửi email reset password
 
-# Reset password: POST /users/password (gửi mail reset)
+# PUT /users/password → đặt lại password với token
 
-# Confirm email: GET /users/confirmation?confirmation_token=xxxx
+# POST /users/confirmation → gửi email xác nhận
+
+# GET /users/confirmation → xác nhận tài khoản qua token
+
+# POST /users/unlock → gửi email unlock
+
+# GET /users/unlock → unlock account qua token
 end

@@ -28,5 +28,14 @@ module BookStore
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
+
+    # Hai dòng này giúp ứng dụng Rails API-only có thể sử dụng session và 
+    # cookie như ứng dụng web thông thường. 
+    # Điều này rất quan trọng khi dùng Devise, 
+    # vì Devise mặc định lưu trạng thái đăng nhập vào session.
+    #  Nếu không có hai middleware này,
+    #  bạn sẽ gặp lỗi liên quan đến session khi đăng nhập, reset password
   end
 end
