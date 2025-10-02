@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_02_071147) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_02_082606) do
   create_table "authors", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -96,8 +96,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_02_071147) do
     t.datetime "updated_at", null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, where: "([reset_password_token] IS NOT NULL)"
+    t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true, where: "([unlock_token] IS NOT NULL)"
   end
 
   add_foreign_key "book_authors", "authors"
