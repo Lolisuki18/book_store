@@ -1,10 +1,5 @@
 Rails.application.routes.draw do
-   devise_for :users,
-             defaults: { format: :json },
-             controllers: {
-               sessions: 'users/sessions',
-               registrations: 'users/registrations'
-             }
+
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -20,5 +15,23 @@ Rails.application.routes.draw do
 
   resources :authors
 
+devise_for :users,
+  defaults: { format: :json },
+  controllers: {
+    registrations: 'users/registrations',
+    sessions: 'users/sessions'
+  }
 
+
+# Các endpoint có sẵn:
+
+# Đăng ký: POST /users
+
+# Đăng nhập: POST /login
+
+# Đăng xuất: DELETE /logout
+
+# Reset password: POST /users/password (gửi mail reset)
+
+# Confirm email: GET /users/confirmation?confirmation_token=xxxx
 end

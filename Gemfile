@@ -5,12 +5,15 @@ gem "rails", "~> 8.0.2", ">= 8.0.2.1"
 # Use sqlite3 as the database for Active Record
 # gem "sqlite3", ">= 2.1"
 #SQL server 
-   gem "tiny_tds"
-   gem "activerecord-sqlserver-adapter"
+gem "tiny_tds"
+gem "activerecord-sqlserver-adapter"
 
-   # Use Devise for authentication
-   gem 'devise'
+# Use Devise for authentication
+gem 'devise'
 gem 'devise-jwt'
+# Use gem 'letter_opener' for fake send mail
+gem 'letter_opener'
+
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]

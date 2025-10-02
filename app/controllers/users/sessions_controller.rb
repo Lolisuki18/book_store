@@ -1,4 +1,4 @@
-class Users::SessionsController < ApplicationController
+class Users::SessionsController < Devise::SessionsController
 
   respond_to :json
 
@@ -12,6 +12,8 @@ class Users::SessionsController < ApplicationController
   end
 
   def respond_to_on_destroy
+     head :no_content
     render json: { status: 200, message: "Logged out successfully." }, status: :ok
   end
+  
 end
