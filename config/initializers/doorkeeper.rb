@@ -1,3 +1,6 @@
+#Đây sẽ là file cấu hình của doorkeeper.rb
+
+
 # frozen_string_literal: true
 # rails generate doorkeeper:install chạy dòng lệnh này để tạo ra file 
 # doorkeeper.rb  và file doorkeeper.en.yml
@@ -7,6 +10,7 @@ Doorkeeper.configure do
   orm :active_record
 
   # This block will be called to check whether the resource owner is authenticated or not.
+  #Khối lệnh này dùng để xác thực người dùng
   resource_owner_authenticator do
     raise "Please configure doorkeeper resource_owner_authenticator block located in #{__FILE__}"
     # Put your resource owner authentication logic here.
@@ -80,7 +84,7 @@ Doorkeeper.configure do
   # want to use API mode that will skip all the views management and change the way how
   # Doorkeeper responds to a requests.
   #
-  # api_only
+  api_only
 
   # Enforce token request content type to application/x-www-form-urlencoded.
   # It is not enabled by default to not break prior versions of the gem.
