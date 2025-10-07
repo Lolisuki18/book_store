@@ -314,6 +314,7 @@ DEPENDENCIES
   debug
   doorkeeper
   doorkeeper-jwt
+  jwt
   kamal
   puma (>= 5.0)
   rails (~> 8.0.2, >= 8.0.2.1)
