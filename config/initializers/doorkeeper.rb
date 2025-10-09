@@ -12,14 +12,10 @@ Doorkeeper.configure do
   # This block will be called to check whether the resource owner is authenticated or not.
   #Khối lệnh này dùng để xác thực người dùng
   #Nó dùng để xét xem ai là người dùng đang đăng nhập
-  resource_owner_authenticator do
-    raise "Please configure doorkeeper resource_owner_authenticator block located in #{__FILE__}"
-    # Put your resource owner authentication logic here.
-    # Example implementation:
-    #   User.find_by(id: session[:user_id]) || redirect_to(new_user_session_url)
-  # Lấy user từ access token hiện tại 
-     user = User.find_by(id: doorkeeper_token&.resource_owner_id)
-     user || render(json: { error: 'Unauthorized' }, status: :unauthorized)
+ resource_owner_authenticator do
+    # Lấy user từ access token hiện tại 
+    user = User.find_by(id: doorkeeper_token&.resource_owner_id) if doorkeeper_token
+    user || render(json: { error: 'Unauthorized' }, status: :unauthorized)
   end
 
 
@@ -130,13 +126,10 @@ Doorkeeper.configure do
   #
   access_token_generator '::Doorkeeper::JWT'
   
-  # JWT algorithm
-  jwt_signing_algorithm :hs256  
-   # Access token and refresh token expiry
-   #Cấu hình thời gian của accesstoken
+  # Cấu hình thời gian của accesstoken
   access_token_expires_in 1.hour
-  #Bật refresh token 
-  refresh_token_enabled true
+  
+  # Bật refresh token 
   use_refresh_token
   # The controller +Doorkeeper::ApplicationController+ inherits from.
   # Defaults to +ActionController::Base+ unless +api_only+ is set, which changes the default to
@@ -191,6 +184,12 @@ Doorkeeper.configure do
   #
   #Chỉ cho phép 1 access token cho mỗi user (revoke token cũ khi tạo mới)
   revoke_previous_authorization_code_token
+  
+  # Cho phép blank redirect URI
+  allow_blank_redirect_uri true
+  
+  # Không force SSL trong development
+  force_ssl_in_redirect_uri !Rails.env.development?
 
   # Require non-confidential clients to use PKCE when using an authorization code
   # to obtain an access_token (disabled by default)
@@ -551,19 +550,8 @@ Doorkeeper.configure do
   # WWW-Authenticate Realm (default: "Doorkeeper").
   #
   # realm "Doorkeeper"
-
-  # Cấu hình JWT secret
+end
+# Cấu hình JWT secret
 Doorkeeper::JWT.configure do
-  secret_key ENV['JWT_SECRET']
-
-  payload do |opts|
-    {
-      iss: 'BookStore API',
-      aud: 'BookStore Client',
-      iat: Time.current.to_i,
-      exp: opts[:expires_in] ? (Time.current + opts[:expires_in]).to_i : nil,
-      sub: opts[:resource_owner_id],
-      scopes: opts[:scopes]&.to_s || 'public'
-    }
-  end
+  secret_key ENV['JWT_SECRET'] || Rails.application.credentials.secret_key_base
 end

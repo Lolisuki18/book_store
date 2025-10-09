@@ -32,3 +32,11 @@
 /config/master.key
 
 /.env
+
+/spec
+/spec/*
+/config/initializers/rswag_ui.rb
+/config/initializers/rswag_api.rb
+/rswag-ui
+/rswag-api
+/swagger

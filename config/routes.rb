@@ -1,5 +1,16 @@
 Rails.application.routes.draw do
-  use_doorkeeper
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
+  # Doorkeeper routes (chỉ mount những gì cần thiết)
+  use_doorkeeper do
+    skip_controllers :authorizations, :applications, :authorized_applications, :tokens
+  end
+  
+  # Auth routes
+  post 'auth/login', to: 'auth#login'
+  post 'auth/refresh', to: 'auth#refresh'
+  post 'auth/logout', to: 'auth#logout'
+  get 'auth/me', to: 'auth#me'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -9,9 +20,9 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-  resources :books
   
-  resources :categories
-
+  # Protected resources - sẽ cần authentication
+  resources :books
+  resources :categories  
   resources :authors
 end
