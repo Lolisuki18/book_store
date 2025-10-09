@@ -11,12 +11,17 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   #Khối lệnh này dùng để xác thực người dùng
+  #Nó dùng để xét xem ai là người dùng đang đăng nhập
   resource_owner_authenticator do
     raise "Please configure doorkeeper resource_owner_authenticator block located in #{__FILE__}"
     # Put your resource owner authentication logic here.
     # Example implementation:
     #   User.find_by(id: session[:user_id]) || redirect_to(new_user_session_url)
+  # Lấy user từ access token hiện tại 
+     user = User.find_by(id: doorkeeper_token&.resource_owner_id)
+     user || render(json: { error: 'Unauthorized' }, status: :unauthorized)
   end
+
 
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb
   # file then you need to declare this block in order to restrict access to the web interface for
@@ -123,8 +128,16 @@ Doorkeeper.configure do
   # Use a custom class for generating the access token.
   # See https://doorkeeper.gitbook.io/guides/configuration/other-configurations#custom-access-token-generator
   #
-  # access_token_generator '::Doorkeeper::JWT'
-
+  access_token_generator '::Doorkeeper::JWT'
+  
+  # JWT algorithm
+  jwt_signing_algorithm :hs256  
+   # Access token and refresh token expiry
+   #Cấu hình thời gian của accesstoken
+  access_token_expires_in 1.hour
+  #Bật refresh token 
+  refresh_token_enabled true
+  use_refresh_token
   # The controller +Doorkeeper::ApplicationController+ inherits from.
   # Defaults to +ActionController::Base+ unless +api_only+ is set, which changes the default to
   # +ActionController::API+. The return value of this option must be a stringified class name.
@@ -176,7 +189,8 @@ Doorkeeper.configure do
   # per client. If a new access token is obtained before the old one
   # expired, the old one gets revoked (disabled by default)
   #
-  # revoke_previous_authorization_code_token
+  #Chỉ cho phép 1 access token cho mỗi user (revoke token cũ khi tạo mới)
+  revoke_previous_authorization_code_token
 
   # Require non-confidential clients to use PKCE when using an authorization code
   # to obtain an access_token (disabled by default)
@@ -373,6 +387,12 @@ Doorkeeper.configure do
   #   https://datatracker.ietf.org/doc/html/rfc6819#section-4.4.3
   #
   # grant_flows %w[authorization_code client_credentials]
+    # Cấu hình grant flows - chỉ cho phép password grant
+    # password là để login bằng email và password để lấy accesstoken 
+    # refresh_token là cho phép sử dụng refresh_token để lấy accesstoken
+  # grant_flows %w[password refresh_token]
+  #Mình sẽ tự define login logout nên sẽ ko cần grant_flow nữa vì khi khai báo cái này 
+  # thì sẽ phải gửi kèm grant_type trong request của mình 
 
   # Allows to customize OAuth grant flows that +each+ application support.
   # You can configure a custom block (or use a class respond to `#call`) that must
@@ -531,4 +551,19 @@ Doorkeeper.configure do
   # WWW-Authenticate Realm (default: "Doorkeeper").
   #
   # realm "Doorkeeper"
+
+  # Cấu hình JWT secret
+Doorkeeper::JWT.configure do
+  secret_key ENV['JWT_SECRET']
+
+  payload do |opts|
+    {
+      iss: 'BookStore API',
+      aud: 'BookStore Client',
+      iat: Time.current.to_i,
+      exp: opts[:expires_in] ? (Time.current + opts[:expires_in]).to_i : nil,
+      sub: opts[:resource_owner_id],
+      scopes: opts[:scopes]&.to_s || 'public'
+    }
+  end
 end
