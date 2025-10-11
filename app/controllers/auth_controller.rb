@@ -48,4 +48,29 @@ class AuthController < ApplicationController
   def register_params
     params.permit(:user_name, :email, :password, :role)
   end
+
+  def refresh
+    header = request.headers['Authorization']
+    token = header.split(' ').last if header
+    jwt_service = JwtService.new
+    decoded = jwt_service.decode(token)
+
+    # Kiểm tra loại token
+    unless decoded && decoded[:type] == "refresh"
+      return render json: { error: "Invalid token type" }, status: :unauthorized
+    end
+
+    user = User.find_by(id: decoded[:user_id])
+    return render json: { error: "User not found" }, status: :unauthorized unless user
+
+    # Tạo access token mới
+    new_access_token = JsonWebToken.encode({ user_id: user.id, type: "access" }, 1.hour.from_now)
+
+    render json: {
+      access_token: new_access_token,
+      refresh_token: token 
+    }, status: :ok
+  rescue JWT::DecodeError
+    render json: { error: "Invalid or expired token" }, status: :unauthorized
+  end
 end

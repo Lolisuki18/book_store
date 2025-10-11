@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   post 'auth/login', to: 'auth#login'
   post 'auth/register', to: 'auth#register'
   get 'auth/me', to: 'auth#me'
+  post '/auth/refresh', to: 'auth#refresh'
 
   resources :books
   
