@@ -10,7 +10,7 @@ class CategoriesController < ApplicationController
     render json: @categories
   end
 
-  #Dùng để xem thử những category này có nghữ sách nào
+
   def show
     render json: @category.to_json(
       include: :books

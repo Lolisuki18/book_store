@@ -13,7 +13,7 @@ class AuthController < ApplicationController
         data:{
           access_token: token[:access], 
           refresh_token: token[:refresh], 
-          user: @user 
+          user: @user.as_json(except: [:password_digest, :created_at, :updated_at])
         }
       }, status: :ok
     else
@@ -31,7 +31,8 @@ class AuthController < ApplicationController
   end
 
   def me
-    render_success('User profile retrieved', current_user)
+    @user = User.includes(:user_detail).find(current_user.id)
+    render_success('User profile retrieved', @user.as_json(include: :user_detail))
   end
   
   private

@@ -9,24 +9,24 @@ module Authenticatable
   private
 
   
-  def authenticate_request
-    header = request.headers['Authorization']
-    header = header.split(' ').last if header
-    begin
-      decoded = JsonWebToken.decode(header)
-      if !decoded
-        render json: { errors: 'Token is invalid' }, status: :unauthorized
-      end
-      @current_user = User.find(decoded[:user_id])
-      if(!@current_user || !@current_user.active?)
-        render json: { errors: 'Cannot find user or user is inactive' }, status: :unauthorized
-      end
-    rescue ActiveRecord::RecordNotFound => e
-      render json: { errors: e.message }, status: :unauthorized
-    rescue JWT::DecodeError => e
-      render json: { errors: e.message }, status: :unauthorized
+ def authenticate_request
+  header = request.headers['Authorization']
+  token = header.split(' ').last if header.present?
+
+  begin
+    decoded_token = JsonWebToken.decode(token)
+    if decoded_token && decoded_token[:user_id]
+      @current_user = User.find(decoded_token[:user_id])
+    else
+      render json: { error: "Invalid or expired token" }, status: :unauthorized
     end
+  rescue JWT::ExpiredSignature
+    render json: { error: "Token has expired" }, status: :unauthorized
+  rescue JWT::DecodeError
+    render json: { error: "Invalid token" }, status: :unauthorized
   end
+end
+
 
   #Check quyền 
 
