@@ -14,6 +14,13 @@ gem "puma", ">= 5.0"
 
 #Gem để mã hoá password
 gem 'bcrypt'
+
+# JWT for authentication
+gem 'jwt'
+
+# Use dotenv to load environment variables
+gem 'dotenv-rails'
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 

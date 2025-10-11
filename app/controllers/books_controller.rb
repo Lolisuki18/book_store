@@ -1,11 +1,17 @@
 class BooksController < ApplicationController
+  include Authenticatable
   before_action :set_book, only: [:show, :update, :destroy]
+  skip_before_action :authenticate_request, only: [:index, :show]
+  #Phân quyền
+  before_action only: [:create, :update, :destroy] do
+      authorize_role(:admin, :staff)
+  end
 
   def index
     @books = Book.all
-     render json: @books.to_json(
-  include: [:publisher, :authors , :categories]
-     )
+    render json: @books.to_json(
+      include: [:publisher, :authors, :categories]
+    )
   end
 
   def show

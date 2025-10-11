@@ -1,6 +1,11 @@
 class AuthorsController < ApplicationController
+    include Authenticatable
+
   before_action :set_author, only: [:show, :update, :destroy]
 
+  before_action only: [:create, :update, :destroy] do
+      authorize_role(:admin, :staff)
+  end
   def index 
     @authors = Author.all
     render json: @authors

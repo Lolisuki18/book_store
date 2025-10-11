@@ -1,7 +1,10 @@
 class CategoriesController < ApplicationController
-
+  include Authenticatable
   before_action :set_category, only: [:show, :destroy, :update]
-
+  skip_before_action :authenticate_request, only: [:index, :show]
+  before_action only: [:create, :update, :destroy] do
+    authorize_role(:admin, :staff)
+  end
   def index
     @categories = Category.all
     render json: @categories
