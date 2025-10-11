@@ -1,18 +1,22 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show]
-  
+  include Authenticatable
+  before_action :set_user, only: [:show, :update, :destroy]
+  skip_before_action :authenticate_request, only: [:index, :show]
+
+  before_action only: [:create, :update , :index] do
+    authorize_role(:admin, :staff, :manager)
+  end
+
+  before_action only: [:destroy] do
+    authorize_role(:admin , :manager)
+  end
+
   def index
-    if @user&.admin? || @user&.manager? || @user&.staff?
       @users = User.all
       render json: {
         message: 'Users retrieved successfully',
         data: @users
       }, status: :ok
-    else
-      render json: {
-        message: 'Access denied'
-      }, status: :forbidden
-    end
   end
 
    def show
@@ -23,18 +27,18 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
-    if @user.save
-      render json: {
-        message: 'User created successfully',
-        data: @user,
-      }, status: :created
-    else
-      render json: {
-        message: 'User creation failed',
-        errors: @user.errors.full_messages
-      }, status: :unprocessable_entity
-    end
+      @user = User.new(user_params)
+      if @user.save
+        render json: {
+          message: 'User created successfully',
+          data: @user,
+        }, status: :created
+      else
+        render json: {
+          message: 'User creation failed',
+          errors: @user.errors.full_messages
+        }, status: :unprocessable_entity
+      end
   end
 
   def update
@@ -52,26 +56,33 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    if @user.update(active: false)
-      render json: {
-        message: 'User deleted successfully'
-      }, status: :ok
-    else
-      render json: {
-        message: 'User deletion failed',
-        errors: @user.errors.full_messages
-      }, status: :unprocessable_entity
-    end
+     if @user.update(active: false)
+        render json: {
+          message: 'User deleted successfully'
+        }, status: :ok
+      else
+        render json: {
+          message: 'User delete failed',
+          errors: @user.errors.full_messages
+        }, status: :unprocessable_entity
+      end
   end
 
   private
+  
   def set_user
     @user = User.find(params[:id])
     if @user.nil?
-      render json: { error: 'User not found' }, status: :not_found
+      render json: { 
+        message: 'User not found',
+        success: false 
+      }, status: :not_found
     end
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'User not found' }, status: :not_found
+    render json: { 
+      message: 'User not found',
+      success: false 
+    }, status: :not_found
   end
 
   def user_params
