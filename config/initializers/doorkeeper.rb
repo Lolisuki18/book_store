@@ -131,6 +131,7 @@ Doorkeeper.configure do
   
   # Bật refresh token 
   use_refresh_token
+  # refresh_token_expires_in 5.minutes
   # The controller +Doorkeeper::ApplicationController+ inherits from.
   # Defaults to +ActionController::Base+ unless +api_only+ is set, which changes the default to
   # +ActionController::API+. The return value of this option must be a stringified class name.

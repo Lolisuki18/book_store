@@ -5,9 +5,10 @@ class AuthController < ApplicationController
 
   # POST /auth/login
   def login
+    #Tìm kiếm user với user_name này 
     user = User.find_by(user_name: params[:user_name])
     
-    if user&.authenticate(params[:password])
+    if user&.authenticate(params[:password]) # nếu có thì so sánh password xem có trùng không
       # Revoke của user này để chỉ có 1 token active
       revoke_user_tokens(user.id)
       
@@ -44,8 +45,25 @@ class AuthController < ApplicationController
     # Tìm access token bằng refresh token
     access_token = Doorkeeper::AccessToken.find_by(refresh_token: refresh_token)
     
-    if access_token.nil? || access_token.revoked? || access_token.expired?
-      render json: { error: 'Invalid or expired refresh token' }, status: :unauthorized
+   if access_token.nil?
+      render json: { error: 'Invalid refresh token' }, status: :unauthorized
+      return
+    end
+    
+    if access_token.revoked?
+      render json: { error: 'Refresh token has been revoked' }, status: :unauthorized
+      return
+    end
+    
+    # Kiểm tra access token expiration (cho access token)
+    if access_token.expired?
+      render json: { error: 'Access token has expired' }, status: :unauthorized
+      return
+    end
+    
+    # Kiểm tra refresh token expiration (nếu có set)
+    if refresh_token_expired?(access_token)
+      render json: { error: 'Refresh token has expired. Please login again.' }, status: :unauthorized
       return
     end
 
@@ -91,6 +109,17 @@ class AuthController < ApplicationController
 
   private
 
+  def refresh_token_expired?(access_token)
+    return false unless access_token.refresh_token
+    
+    # Lấy refresh token expiration từ Doorkeeper config
+    refresh_expires_in = Doorkeeper.configuration.refresh_token_expires_in
+    return false unless refresh_expires_in
+    
+    # Check nếu refresh token đã hết hạn
+    access_token.created_at + refresh_expires_in < Time.current
+  end
+  
   def create_custom_token(user)
     application = get_or_create_application
     

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_09_082228) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_09_090533) do
   create_table "authors", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -117,6 +117,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_082228) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "user_details", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "full_name", null: false
+    t.string "phone_number", null: false
+    t.text "address"
+    t.date "date_of_birth"
+    t.string "gender", null: false
+    t.string "avatar_url"
+    t.string "nickname"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_details_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "user_name"
     t.string "email"
@@ -124,6 +138,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_082228) do
     t.string "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
   end
 
   add_foreign_key "book_authors", "authors"
@@ -133,4 +148,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_082228) do
   add_foreign_key "books", "publishers"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "user_details", "users"
 end
