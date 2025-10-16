@@ -3,7 +3,7 @@ class AuthController < ApplicationController
   before_action :authenticate_request, only: [:me]
   
   def login 
-    @user = User.find_by(user_name: login_params[:user_name])
+    @user = User.find_by(user_name: login_params[:user_name]) || User.find_by(email: login_params[:user_name])
     if @user&.authenticate(login_params[:password])
       jwt_service = JwtService.new
       token = jwt_service.generate_tokens(@user)
@@ -35,20 +35,7 @@ class AuthController < ApplicationController
     render_success('User profile retrieved', @user.as_json(include: :user_detail))
   end
   
-  private
-
-  def login_params
-    if params[:auth].present?
-      params.require(:auth).permit(:user_name, :password)
-    else
-      params.permit(:user_name, :password)
-    end
-  end
-
-  def register_params
-    params.permit(:user_name, :email, :password, :role)
-  end
-
+  
   def refresh
     header = request.headers['Authorization']
     token = header.split(' ').last if header
@@ -73,4 +60,15 @@ class AuthController < ApplicationController
   rescue JWT::DecodeError
     render json: { error: "Invalid or expired token" }, status: :unauthorized
   end
+
+  private
+
+  def login_params
+      params.permit(:user_name, :password)
+  end
+
+  def register_params
+    params.permit(:user_name, :email, :password, :role)
+  end
+
 end
