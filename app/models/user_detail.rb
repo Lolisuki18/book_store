@@ -6,9 +6,12 @@ class UserDetail < ApplicationRecord
   validates :phone, presence: true , uniqueness: true
   validates :address, presence: true
   validates :gender, presence: true
+  validates :user_id, presence: true, uniqueness: true
+  
 
   #enum 
   enum :gender, { male: "Male", female: "Female", other: "Other" }
+  
   
   # suffix: true
   # Rails sẽ tạo ra các method như:
