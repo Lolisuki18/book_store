@@ -28,6 +28,6 @@ Rails.application.routes.draw do
   
   resources :users
 
-  resources :user_details
+  # resources :user_details # Không cần thiết nữa vì đã gộp vào users
 
 end

@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   end
 
   def index
-      @users = User.includes(:user_detail).all
+      @users = User.all
       render json: {
         message: 'Users retrieved successfully',
         data: @users
@@ -71,7 +71,7 @@ class UsersController < ApplicationController
   private
   
   def set_user
-    @user = User.includes(:user_detail).find(params[:id])
+    @user = User.find(params[:id])
     if @user.nil?
       render json: { 
         message: 'User not found',
@@ -86,6 +86,8 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:user_name, :email, :password, :role, :active)
+    params.require(:user).permit(:user_name, :email, :password, :role, :active, 
+                                  :full_name, :phone, :address, :date_of_birth, 
+                                  :gender, :profile_picture_url)
   end
 end

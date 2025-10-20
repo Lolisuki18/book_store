@@ -31,8 +31,8 @@ class AuthController < ApplicationController
   end
 
   def me
-    @user = User.includes(:user_detail).find(current_user.id)
-    render_success('User profile retrieved', @user.as_json(include: :user_detail))
+    @user = User.find(current_user.id)
+    render_success('User profile retrieved', @user.as_json(except: [:password_digest, :created_at, :updated_at]))
   end
   
   
