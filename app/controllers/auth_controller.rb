@@ -68,7 +68,8 @@ class AuthController < ApplicationController
   end
 
   def register_params
-    params.permit(:user_name, :email, :password, :role)
+    params.permit(:user_name, :email, :password, :role,:full_name, :phone, :address, :date_of_birth, 
+                                  :gender, :profile_picture_url)
   end
 
 end
