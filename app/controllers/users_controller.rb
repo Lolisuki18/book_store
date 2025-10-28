@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   skip_before_action :authenticate_request, only: [:index, :show]
 
   before_action only: [:create, :update , :index] do
-    authorize_role(:admin, :staff, :manager)
+    authorize_role(:admin, :staff, :manager, :user)
   end
 
   before_action only: [:destroy] do
@@ -15,14 +15,14 @@ class UsersController < ApplicationController
       @users = User.all
       render json: {
         message: 'Users retrieved successfully',
-        data: @users
+        data: @users.map(&:safe_json)
       }, status: :ok
   end
 
    def show
     render json: {
       message: 'User retrieved successfully',
-      data: @user
+      data: @user.safe_json
     }, status: :ok
   end
 
@@ -31,7 +31,7 @@ class UsersController < ApplicationController
       if @user.save
         render json: {
           message: 'User created successfully',
-          data: @user,
+          data: @user.safe_json,
         }, status: :created
       else
         render json: {
@@ -42,10 +42,10 @@ class UsersController < ApplicationController
   end
 
   def update
-    if @user.update(user_params)
+    if @user.update(user_params_update)
       render json: {
         message: 'User updated successfully',
-        data: @user
+        data: @user.safe_json
       }, status: :ok
     else
       render json: {
@@ -67,6 +67,8 @@ class UsersController < ApplicationController
         }, status: :unprocessable_entity
       end
   end
+
+  
 
   private
   
@@ -90,4 +92,10 @@ class UsersController < ApplicationController
                                   :full_name, :phone, :address, :date_of_birth, 
                                   :gender, :profile_picture_url)
   end
+
+  def user_params_update
+     params.permit(:user_name, :email,:role, :active,:full_name, :phone, :address, :date_of_birth, :gender)
+  end
+
+ 
 end
