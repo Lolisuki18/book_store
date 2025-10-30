@@ -2,9 +2,6 @@ Rails.application.routes.draw do
   get "authrails/generate"
   get "authrails/controller"
   get "authrails/auth"
-  # Swagger UI routes
-  mount Rswag::Ui::Engine => '/api-docs'
-  mount Rswag::Api::Engine => '/api-docs'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -14,7 +11,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-  # Auth routes for Swagger
+  # Auth routes
   post 'auth/login', to: 'auth#login'
   post 'auth/register', to: 'auth#register'
   get 'auth/me', to: 'auth#me'
