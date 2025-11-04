@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
   skip_before_action :authenticate_request, only: [:index, :show]
 
-  before_action only: [:create, :update , :index] do
+  before_action only: [:create, :update ] do
     authorize_role(:admin, :staff, :manager, :user)
   end
 

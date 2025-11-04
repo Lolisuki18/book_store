@@ -39,8 +39,8 @@ class AuthController < ApplicationController
   def refresh
     header = request.headers['Authorization']
     token = header.split(' ').last if header
-    jwt_service = JwtService.new
-    decoded = jwt_service.decode(token)
+    # jwt_service = JwtService.new
+    decoded = JsonWebToken.decode(token)
 
     # Kiểm tra loại token
     unless decoded && decoded[:type] == "refresh"
