@@ -53,7 +53,7 @@ GEM
       activemodel (= 8.0.2.1)
       activesupport (= 8.0.2.1)
       timeout (>= 0.4.0)
-    activerecord-sqlserver-adapter (8.0.8)
+    activerecord-sqlserver-adapter (8.0.10)
       activerecord (~> 8.0.0)
       tiny_tds
     activestorage (8.0.2.1)
@@ -79,8 +79,8 @@ GEM
     base64 (0.3.0)
     bcrypt (3.1.20)
     bcrypt_pbkdf (1.1.1)
-    benchmark (0.4.1)
-    bigdecimal (3.2.3)
+    benchmark (0.5.0)
+    bigdecimal (3.3.1)
     bootsnap (1.18.6)
       msgpack (~> 1.2)
     brakeman (7.1.0)
@@ -142,7 +142,7 @@ GEM
       net-smtp
     marcel (1.1.0)
     mini_mime (1.1.5)
-    minitest (5.25.5)
+    minitest (5.26.1)
     msgpack (1.8.0)
     net-imap (0.5.10)
       date
@@ -284,7 +284,7 @@ GEM
     thor (1.4.0)
     thruster (0.1.15)
     thruster (0.1.15-x86_64-linux)
-    timeout (0.4.3)
+    timeout (0.4.4)
     tiny_tds (3.3.0-x64-mingw-ucrt)
       bigdecimal (~> 3)
     tiny_tds (3.3.0-x86_64-linux-gnu)
@@ -296,7 +296,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
-    uri (1.0.3)
+    uri (1.1.1)
     useragent (0.16.11)
     websocket-driver (0.8.0)
       base64
